@@ -30,7 +30,7 @@ function  createInput(text){
     texto.className='pure-input pure-input-1';
     body.appendChild(texto);
 }
-var existsAlready = false;
+var tableExistsAlready = false;
 
 function generarTabla(){
     // get the reference for the body
@@ -47,9 +47,9 @@ function generarTabla(){
     var Columnas = document.getElementById('inputColumnas');
     var y = parseInt(Columnas.value) + 1 ;
 
-    if (!existsAlready) {
+    if (!tableExistsAlready) {
         // creating all cells
-        existsAlready=true;
+        tableExistsAlready=true;
         for (var i = 0; i < x; i++) {
             // creates a table row
             var row = document.createElement("tr");
@@ -81,20 +81,39 @@ function generarTabla(){
         // sets the border attribute of tbl to 2;
         /*tbl.setAttribute("border", "2");*/
 
-        var btnResolver = document.createElement('input');
-        btnResolver.value="Resolver";
-        btnResolver.setAttribute('id','btnResolver');
-        btnResolver.setAttribute('onClick','saveTable(costos)');
-        btnResolver.className = 'pure-button pure-button-primary';
-        body.appendChild(btnResolver);
+        var btnResolverNWC = document.createElement('input');
+        btnResolverNWC.value="NWCM";
+        btnResolverNWC.setAttribute('id','btnResolverNWC');
+        btnResolverNWC.setAttribute('onClick','saveTable(costos,"NWC")');
+        btnResolverNWC.className = 'pure-button pure-button-primary';
+        body.appendChild(btnResolverNWC);
+
+
+        var btnResolverLCM = document.createElement('input');
+        btnResolverLCM.value="LCM";
+        btnResolverLCM.setAttribute('id','btnResolverLCM');
+        btnResolverLCM.setAttribute('onClick','saveTable(costos,"LCM")');
+        btnResolverLCM.className = 'pure-button pure-button-primary';
+        body.appendChild(btnResolverLCM);
+
+        var btnResolverVAM = document.createElement('input');
+        btnResolverVAM.value="VAM";
+        btnResolverVAM.setAttribute('id','btnResolverVAM');
+        btnResolverVAM.setAttribute('onClick','saveTable(costos,"VAM")');
+        btnResolverVAM.className = 'pure-button pure-button-primary';
+        body.appendChild(btnResolverVAM);
     }
     else{
         var mainForm = document.getElementById('mainForm');
         var existingTable = document.getElementById('tablaGenerada');
-        var existingButton = document.getElementById('btnResolver');
+        var existingButtonVAM = document.getElementById('btnResolverVAM');
+        var existingButtonLCM = document.getElementById('btnResolverLCM');
+        var existingButtonNWC = document.getElementById('btnResolverNWC');
         mainForm.removeChild(existingTable);
-        mainForm.removeChild(existingButton);
-        existsAlready = false;
+        mainForm.removeChild(existingButtonVAM);
+        mainForm.removeChild(existingButtonLCM);
+        mainForm.removeChild(existingButtonNWC);
+        tableExistsAlready = false;
         generarTabla();
     }
 
@@ -103,7 +122,7 @@ function generarTabla(){
 /*createTable(solucion);
 createInput(total);*/
 
-function saveTable(myTableArray) {
+function saveTable(myTableArray,method) {
 
     costos.length=0;
     demanda.length=0;
@@ -136,9 +155,19 @@ function saveTable(myTableArray) {
         oferta.push(dataOferta);
     }
 
-    vam();
+    if (method==='LCM') {
+        lcm();
+    }
 
-    /*createTable(costos);*/
+    if (method==='VAM') {
+        vam();
+    }
+
+    if (method==='NWC') {
+        nwc();
+    }
+
+
     createTable(solucion);
     createInput(total);
 
