@@ -312,19 +312,115 @@ function vam(){
     window.total = ftotal(costos,solucion,(copiaDemanda.length),(copiaOferta.length));
 }
 
-/*oferta=[100,100,200,200];
-demanda=[100,600,100];
-costos=[[31,42,53],[11,62,23],[21,82,39],[141,12,45]];*/
-/*oferta=[250,300,400];
-demanda=[200,225,275,250];
-costos=[[11,13,17,14],[16,18,14,10],[21,24,13,10]];*/
+function hallarCM(copiaCostos) {
+    var min;
+    for (var m=0;m<oferta.length;m++) {
+        for (var n=0;n<demanda.length;n++) {
+            if (!isNaN(copiaCostos[m][n])) {
+                min = copiaCostos[m][n];
+            }
+        }
+    }
+    for (var i=0;i<oferta.length;i++) {
+        for (var j=0;j<demanda.length;j++) {
+            if (copiaCostos[i][j]<min && !isNaN(copiaCostos[i][j])) {
+                min = copiaCostos[i][j];
+            }
+        }
+    }
+    return min;
+}
 
+function hallarPosicionesCM(costoMinimo,copiaCostos) {
+    var posiciones = [];
+    for (var i=oferta.length-1;i>=0;i--) {
+        for (var j=demanda.length-1;j>=0;j--) {
+            if (copiaCostos[i][j]==costoMinimo) {
+                posiciones[0] = i;
+                posiciones[1] = j;
+                break;
+            }
+        }
+    }
+    return posiciones
+}
 
-/*oferta=[100,200,450,500];
-demanda=[200,25,275,250];
-costos=[[101,103,107,140],[126,148,184,170],[221,214,113,120],[227,214,213,125]];*/
-/*compararOyD();
-solucion= crearSolucion();
-vam();*/
+function lcm(){
+    compararOyD();
+    solucion= crearSolucion();
+    var copiaCostos = ClonarArreglo(costos);
+    var copiaDemanda = ClonarArreglo(demanda);
+    var copiaOferta = ClonarArreglo(oferta);
+    var sumOyD = copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
+    do {
+        var costoMinimo = hallarCM(copiaCostos);
+        var posiciones = hallarPosicionesCM(costoMinimo,copiaCostos);
+        
+        if (copiaOferta[posiciones[0]]>copiaDemanda[posiciones[1]]) {
+            solucion[posiciones[0]][posiciones[1]] = copiaDemanda[posiciones[1]];
+            copiaOferta[posiciones[0]]-=copiaDemanda[posiciones[1]];
+            copiaDemanda[posiciones[1]]=0;
+            for (var i=0;i<copiaOferta.length;i++) {
+                copiaCostos[i][posiciones[1]] = "-";
+            }
+        }
+        else {
+            solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
+            copiaDemanda[posiciones[1]]-=copiaOferta[posiciones[0]];
+            copiaOferta[posiciones[0]]=0;
+            for (var j=0; j<copiaDemanda.length; j++) {
+                copiaCostos[posiciones[0]][j] = "-";
+            }
+        }
+        sumOyD= copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
+    }
+    while(sumOyD>0);
+    window.total = ftotal(costos,solucion,(copiaDemanda.length),(copiaOferta.length));
+}
 
+function hallarPosicionesNWC(copiaCostos) {
+    var posiciones = [];
 
+    for (var i=0;i<oferta.length;i++) {
+        for (var j=0;j<demanda.length;j++) {
+            if (!isNaN(copiaCostos[i][j])) {
+                posiciones.push(i);
+                posiciones.push(j);
+            }
+        }
+    }
+
+    return posiciones;
+}
+
+function nwc(){
+    compararOyD();
+    solucion= crearSolucion();
+    var copiaCostos = ClonarArreglo(costos);
+    var copiaDemanda = ClonarArreglo(demanda);
+    var copiaOferta = ClonarArreglo(oferta);
+    var sumOyD = copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
+    do{
+        var posiciones = hallarPosicionesNWC(copiaCostos);
+
+        if (copiaOferta[posiciones[0]]>copiaDemanda[posiciones[1]]) {
+            solucion[posiciones[0]][posiciones[1]] = copiaDemanda[posiciones[1]];
+            copiaOferta[posiciones[0]]-=copiaDemanda[posiciones[1]];
+            copiaDemanda[posiciones[1]]=0;
+            for (var i=0;i<copiaOferta.length;i++) {
+                copiaCostos[i][posiciones[1]] = "-";
+            }
+        }
+        else {
+            solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
+            copiaDemanda[posiciones[1]]-=copiaOferta[posiciones[0]];
+            copiaOferta[posiciones[0]]=0;
+            for (var j=0; j<copiaDemanda.length; j++) {
+                copiaCostos[posiciones[0]][j] = "-";
+            }
+        }
+        sumOyD= copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
+    }
+    while(sumOyD>0);
+    window.total = ftotal(costos,solucion,(copiaDemanda.length),(copiaOferta.length));
+}
