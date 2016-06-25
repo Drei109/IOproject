@@ -83,8 +83,6 @@ function generarTabla(){
 
         var btnResolver = document.createElement('input');
         btnResolver.value="Resolver";
-        /*var btnResolverText = document.createTextNode('Resolver');
-        btnResolver.appendChild(btnResolverText);*/
         btnResolver.setAttribute('id','btnResolver');
         btnResolver.setAttribute('onClick','saveTable(costos)');
         btnResolver.className = 'pure-button pure-button-primary';
