@@ -6,6 +6,7 @@ var oferta = [];
 var demanda = [];
 var costos = [];
 var solucion=[];
+var procesoSolucion = [];
 
 function crearSolucion() {
     var solucion = [];
@@ -278,6 +279,7 @@ function ftotal(costos, solucion, x, y) {
 function vam(){
     compararOyD();
     solucion= crearSolucion();
+    procesoSolucion=[];
 
     var copiaCostos = ClonarArreglo(costos);
     var copiaDemanda = ClonarArreglo(demanda);
@@ -298,7 +300,7 @@ function vam(){
                 copiaCostos[i][posiciones[1]] = "-";
             }
         }
-        else {
+        else if (copiaOferta[posiciones[0]]<copiaDemanda[posiciones[1]]){
             solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
             copiaDemanda[posiciones[1]]-=copiaOferta[posiciones[0]];
             copiaOferta[posiciones[0]]=0;
@@ -306,6 +308,18 @@ function vam(){
                 copiaCostos[posiciones[0]][j] = "-";
             }
         }
+        else{
+            solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
+            copiaDemanda[posiciones[1]] = 0;
+            copiaOferta[posiciones[0]] = 0;
+            for (var k=0; k<copiaDemanda.length; k++) {
+                copiaCostos[posiciones[0]][k] = "-";
+            }
+            for (var l=0;l<copiaOferta.length;l++) {
+                copiaCostos[l][posiciones[1]] = "-";
+            }
+        }
+        procesoSolucion.push(ClonarArreglo(solucion));
         sumOyD= copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
     }
     while (sumOyD>0);
@@ -348,6 +362,7 @@ function hallarPosicionesCM(costoMinimo,copiaCostos) {
 function lcm(){
     compararOyD();
     solucion= crearSolucion();
+    procesoSolucion=[];
     var copiaCostos = ClonarArreglo(costos);
     var copiaDemanda = ClonarArreglo(demanda);
     var copiaOferta = ClonarArreglo(oferta);
@@ -364,7 +379,7 @@ function lcm(){
                 copiaCostos[i][posiciones[1]] = "-";
             }
         }
-        else {
+        else if (copiaOferta[posiciones[0]]<copiaDemanda[posiciones[1]]){
             solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
             copiaDemanda[posiciones[1]]-=copiaOferta[posiciones[0]];
             copiaOferta[posiciones[0]]=0;
@@ -372,6 +387,18 @@ function lcm(){
                 copiaCostos[posiciones[0]][j] = "-";
             }
         }
+        else{
+            solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
+            copiaDemanda[posiciones[1]] = 0;
+            copiaOferta[posiciones[0]] = 0;
+            for (var k=0; k<copiaDemanda.length; k++) {
+                copiaCostos[posiciones[0]][k] = "-";
+            }
+            for (var l=0;l<copiaOferta.length;l++) {
+                copiaCostos[l][posiciones[1]] = "-";
+            }
+        }
+        procesoSolucion.push(ClonarArreglo(solucion));
         sumOyD= copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
     }
     while(sumOyD>0);
@@ -396,6 +423,7 @@ function hallarPosicionesNWC(copiaCostos) {
 function nwc(){
     compararOyD();
     solucion= crearSolucion();
+    procesoSolucion=[];
     var copiaCostos = ClonarArreglo(costos);
     var copiaDemanda = ClonarArreglo(demanda);
     var copiaOferta = ClonarArreglo(oferta);
@@ -411,7 +439,7 @@ function nwc(){
                 copiaCostos[i][posiciones[1]] = "-";
             }
         }
-        else {
+        else if (copiaOferta[posiciones[0]]<copiaDemanda[posiciones[1]]){
             solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
             copiaDemanda[posiciones[1]]-=copiaOferta[posiciones[0]];
             copiaOferta[posiciones[0]]=0;
@@ -419,7 +447,19 @@ function nwc(){
                 copiaCostos[posiciones[0]][j] = "-";
             }
         }
+        else{
+            solucion[posiciones[0]][posiciones[1]] = copiaOferta[posiciones[0]];
+            copiaDemanda[posiciones[1]] = 0;
+            copiaOferta[posiciones[0]] = 0;
+            for (var k=0; k<copiaDemanda.length; k++) {
+                copiaCostos[posiciones[0]][k] = "-";
+            }
+            for (var l=0;l<copiaOferta.length;l++) {
+                copiaCostos[l][posiciones[1]] = "-";
+            }
+        }
         sumOyD= copiaOferta.reduce(function(a, b) { return a + b; }, 0) + copiaDemanda.reduce(function(a, b) { return a + b; }, 0);
+        procesoSolucion.push(ClonarArreglo(solucion));
     }
     while(sumOyD>0);
     window.total = ftotal(costos,solucion,(copiaDemanda.length),(copiaOferta.length));

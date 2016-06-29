@@ -1,36 +1,71 @@
 /**
  * Created by Drei on 6/21/2016.
  */
-function createTable(tableData) {
-    var body = document.getElementById("mainForm");
-    var table = document.createElement('table');
-    var tableBody = document.createElement('tbody');
 
-    tableData.forEach(function(rowData) {
-        var row = document.createElement('tr');
+var tableExistsAlready = false;
+var solutionExistsAlready = false;
+var processExistsAlready = false;
 
-        rowData.forEach(function(cellData) {
-            var cell = document.createElement('td');
-            cell.appendChild(document.createTextNode(cellData));
-            row.appendChild(cell);
-        });
-
-        tableBody.appendChild(row);
-    });
-
-    table.appendChild(tableBody);
-    table.className='pure-table pure-table-bordered';
-    body.appendChild(table);
-}
-function  createInput(text){
+function crearTablaSolucion(tableData) {
     var body = document.getElementById("mainForm");
     var texto = document.createElement('input');
+    var divSolucion = document.createElement('div');
+    divSolucion.setAttribute('id','divSolucion');
+    var table = document.createElement('table');
+    table.className='tableSol';
+    var tableBody = document.createElement('tbody');
+
+    //text
+    var p = document.createElement('p');
+    var textNode = document.createTextNode("Solución");
+    p.appendChild(textNode);
+
+
+    if (!solutionExistsAlready) {
+        tableData.forEach(function(rowData) {
+            var row = document.createElement('tr');
+
+            rowData.forEach(function(cellData) {
+                var cell = document.createElement('td');
+                cell.appendChild(document.createTextNode(cellData));
+                row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+        });
+
+        divSolucion.appendChild(p);
+
+        table.appendChild(tableBody);
+        table.className+=' pure-table pure-table-bordered';
+        divSolucion.appendChild(table);
+
+        //input stuff
+        texto.value=total;
+        texto.readOnly=true;
+        texto.className='inputSol pure-input pure-input-1';
+        divSolucion.appendChild(texto);
+
+        body.appendChild(divSolucion);
+
+        solutionExistsAlready =true;
+    }
+    else{
+        var divSol = document.getElementById('divSolucion');
+        body.removeChild(divSol);
+        solutionExistsAlready = false;
+        crearTablaSolucion(tableData);
+    }
+}
+/*function  createInput(text){
+    var body = document.getElementById("mainForm");
+    var texto = document.createElement('input');
+    /!*texto.setAttribute('id','inputSol');*!/
     texto.value=text;
     texto.readOnly=true;
-    texto.className='pure-input pure-input-1';
+    texto.className='inputSol pure-input pure-input-1';
     body.appendChild(texto);
-}
-var tableExistsAlready = false;
+}*/
 
 function generarTabla(){
     // get the reference for the body
@@ -46,6 +81,15 @@ function generarTabla(){
     var x = parseInt(Filas.value) + 1 ;
     var Columnas = document.getElementById('inputColumnas');
     var y = parseInt(Columnas.value) + 1 ;
+    if(solutionExistsAlready){
+        body.removeChild(document.getElementById('divSolucion'));
+        solutionExistsAlready = false;
+    }
+
+    if(processExistsAlready){
+        body.removeChild(document.getElementById('divProceso'));
+        processExistsAlready = false;
+    }
 
     if (!tableExistsAlready) {
         // creating all cells
@@ -119,9 +163,55 @@ function generarTabla(){
 
 }
 
-/*createTable(solucion);
-createInput(total);*/
+function crearTablaProceso(procesoSolucion) {
+    var body = document.getElementById("mainForm");
+    var divProceso = document.createElement('div');
+    divProceso.setAttribute('id','divProceso');
+    var table = [];
+    var tableBody = [];
+    var p = [];
+    var textnode = [];
 
+
+    if (!processExistsAlready) {
+        /*var br = document.createElement('br');*/
+        for (var i=0;i<procesoSolucion.length-1;i++) {
+            p.push(document.createElement('p'));
+            table.push(document.createElement('table'));
+            tableBody.push(document.createElement('tbody'));
+            table[i].className='t'+ i;
+            textnode.push(document.createTextNode("Iteración N° " + (parseInt(i)+1)));
+            procesoSolucion[i].forEach(function(rowData) {
+                var row = document.createElement('tr');
+
+                rowData.forEach(function(cellData) {
+                    var cell = document.createElement('td');
+                    cell.appendChild(document.createTextNode(cellData));
+                    row.appendChild(cell);
+                });
+
+                tableBody[i].appendChild(row);
+            });
+            p[i].appendChild(textnode[i]);
+            p[i].className = 'pProceso';
+            table[i].appendChild(tableBody[i]);
+            table[i].className+=' tableProceso pure-table pure-table-bordered';
+            divProceso.appendChild(p[i]);
+            /*p.appendChild(br);*/
+            divProceso.appendChild(table[i]);
+        }
+        body.appendChild(divProceso);
+        processExistsAlready =true;
+
+    }
+    else{
+        var proceso = document.getElementById('divProceso');
+        body.removeChild(proceso);
+
+        processExistsAlready = false;
+        crearTablaProceso(procesoSolucion);
+    }
+}
 function saveTable(myTableArray,method) {
 
     costos.length=0;
@@ -166,9 +256,7 @@ function saveTable(myTableArray,method) {
     if (method==='NWC') {
         nwc();
     }
-
-
-    createTable(solucion);
-    createInput(total);
+    crearTablaProceso(procesoSolucion);
+    crearTablaSolucion(solucion);
 
 }
