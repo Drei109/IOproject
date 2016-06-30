@@ -347,9 +347,18 @@ function hallarCM(copiaCostos) {
 
 function hallarPosicionesCM(costoMinimo,copiaCostos) {
     var posiciones = [];
-    for (var i=oferta.length-1;i>=0;i--) {
+    /*for (var i=oferta.length-1;i>=0;i--) {
         for (var j=demanda.length-1;j>=0;j--) {
             if (copiaCostos[i][j]==costoMinimo) {
+                posiciones[0] = i;
+                posiciones[1] = j;
+                break;
+            }
+        }
+    }*/
+    for (var i=0;i<oferta.length;i++) {
+        for (var j=0;j<demanda.length;j++) {
+            if (copiaCostos[i][j]==costoMinimo && posiciones[0]==undefined) {
                 posiciones[0] = i;
                 posiciones[1] = j;
                 break;

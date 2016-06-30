@@ -6,163 +6,6 @@ var tableExistsAlready = false;
 var solutionExistsAlready = false;
 var processExistsAlready = false;
 
-function crearTablaSolucion(tableData) {
-    var body = document.getElementById("mainForm");
-    var texto = document.createElement('input');
-    var divSolucion = document.createElement('div');
-    divSolucion.setAttribute('id','divSolucion');
-    var table = document.createElement('table');
-    table.className='tableSol';
-    var tableBody = document.createElement('tbody');
-
-    //text
-    var p = document.createElement('p');
-    var textNode = document.createTextNode("Solución");
-    p.appendChild(textNode);
-
-
-    if (!solutionExistsAlready) {
-        tableData.forEach(function(rowData) {
-            var row = document.createElement('tr');
-
-            rowData.forEach(function(cellData) {
-                var cell = document.createElement('td');
-                cell.appendChild(document.createTextNode(cellData));
-                row.appendChild(cell);
-            });
-
-            tableBody.appendChild(row);
-        });
-
-        divSolucion.appendChild(p);
-
-        table.appendChild(tableBody);
-        table.className+=' pure-table pure-table-bordered';
-        divSolucion.appendChild(table);
-
-        //input stuff
-        texto.value=total;
-        texto.readOnly=true;
-        texto.className='inputSol pure-input pure-input-1';
-        divSolucion.appendChild(texto);
-
-        body.appendChild(divSolucion);
-
-        solutionExistsAlready =true;
-    }
-    else{
-        var divSol = document.getElementById('divSolucion');
-        body.removeChild(divSol);
-        solutionExistsAlready = false;
-        crearTablaSolucion(tableData);
-    }
-}
-/*function  createInput(text){
-    var body = document.getElementById("mainForm");
-    var texto = document.createElement('input');
-    /!*texto.setAttribute('id','inputSol');*!/
-    texto.value=text;
-    texto.readOnly=true;
-    texto.className='inputSol pure-input pure-input-1';
-    body.appendChild(texto);
-}*/
-
-function generarTabla(){
-    // get the reference for the body
-    var body = document.getElementById("mainForm");
-
-    // creates a <table> element and a <tbody> element
-    var tbl     = document.createElement("table");
-    tbl.className='pure-table pure-table-bordered';
-    tbl.setAttribute('id','tablaGenerada');
-    /*var tblBody = document.createElement("tbody");*/
-
-    var Filas = document.getElementById('inputFilas');
-    var x = parseInt(Filas.value) + 1 ;
-    var Columnas = document.getElementById('inputColumnas');
-    var y = parseInt(Columnas.value) + 1 ;
-    if(solutionExistsAlready){
-        body.removeChild(document.getElementById('divSolucion'));
-        solutionExistsAlready = false;
-    }
-
-    if(processExistsAlready){
-        body.removeChild(document.getElementById('divProceso'));
-        processExistsAlready = false;
-    }
-
-    if (!tableExistsAlready) {
-        // creating all cells
-        tableExistsAlready=true;
-        for (var i = 0; i < x; i++) {
-            // creates a table row
-            var row = document.createElement("tr");
-
-            for (var j = 0; j < y; j++) {
-                // Create a <td> element and a text node, make the text
-                // node the contents of the <td>, and put the <td> at
-                // the end of the table row
-                var cell = document.createElement("td");
-                /*var cellText = document.createTextNode(i+""+j);*/
-                var input = document.createElement('input');
-                input.className = 'pure-u-23-24';
-                if (i == x - 1 && j == y - 1) {
-                    input.readOnly = true;
-                    input.type = 'hidden';
-                }
-                cell.appendChild(input);
-                row.appendChild(cell);
-            }
-
-            // add the row to the end of the table body
-            tbl.appendChild(row);
-        }
-
-        // put the <tbody> in the <table>
-        /*tbl.appendChild(tblBody);*/
-        // appends <table> into <body>
-        body.appendChild(tbl);
-        // sets the border attribute of tbl to 2;
-        /*tbl.setAttribute("border", "2");*/
-
-        var btnResolverNWC = document.createElement('input');
-        btnResolverNWC.value="NWCM";
-        btnResolverNWC.setAttribute('id','btnResolverNWC');
-        btnResolverNWC.setAttribute('onClick','saveTable(costos,"NWC")');
-        btnResolverNWC.className = 'pure-button pure-button-primary';
-        body.appendChild(btnResolverNWC);
-
-
-        var btnResolverLCM = document.createElement('input');
-        btnResolverLCM.value="LCM";
-        btnResolverLCM.setAttribute('id','btnResolverLCM');
-        btnResolverLCM.setAttribute('onClick','saveTable(costos,"LCM")');
-        btnResolverLCM.className = 'pure-button pure-button-primary';
-        body.appendChild(btnResolverLCM);
-
-        var btnResolverVAM = document.createElement('input');
-        btnResolverVAM.value="VAM";
-        btnResolverVAM.setAttribute('id','btnResolverVAM');
-        btnResolverVAM.setAttribute('onClick','saveTable(costos,"VAM")');
-        btnResolverVAM.className = 'pure-button pure-button-primary';
-        body.appendChild(btnResolverVAM);
-    }
-    else{
-        var mainForm = document.getElementById('mainForm');
-        var existingTable = document.getElementById('tablaGenerada');
-        var existingButtonVAM = document.getElementById('btnResolverVAM');
-        var existingButtonLCM = document.getElementById('btnResolverLCM');
-        var existingButtonNWC = document.getElementById('btnResolverNWC');
-        mainForm.removeChild(existingTable);
-        mainForm.removeChild(existingButtonVAM);
-        mainForm.removeChild(existingButtonLCM);
-        mainForm.removeChild(existingButtonNWC);
-        tableExistsAlready = false;
-        generarTabla();
-    }
-
-}
-
 function crearTablaProceso(procesoSolucion) {
     var body = document.getElementById("mainForm");
     var divProceso = document.createElement('div');
@@ -212,6 +55,172 @@ function crearTablaProceso(procesoSolucion) {
         crearTablaProceso(procesoSolucion);
     }
 }
+
+function crearTablaSolucion(tableData) {
+    var body = document.getElementById("mainForm");
+    var texto = document.createElement('input');
+    texto.setAttribute('id','inputSol');
+    var divSolucion = document.createElement('div');
+    divSolucion.setAttribute('id','divSolucion');
+    var table = document.createElement('table');
+    table.className='tableSol';
+    var tableBody = document.createElement('tbody');
+
+    //text
+    var p = document.createElement('p');
+    p.className='pure-u-1-3';
+    var textNode = document.createTextNode("Solución");
+    p.appendChild(textNode);
+
+
+    if (!solutionExistsAlready) {
+        tableData.forEach(function(rowData) {
+            var row = document.createElement('tr');
+
+            rowData.forEach(function(cellData) {
+                var cell = document.createElement('td');
+                cell.appendChild(document.createTextNode(cellData));
+                row.appendChild(cell);
+            });
+
+            tableBody.appendChild(row);
+        });
+
+        divSolucion.appendChild(p);
+
+        table.appendChild(tableBody);
+        table.className+=' pure-table pure-table-bordered';
+        divSolucion.appendChild(table);
+
+        //input stuff
+        texto.value='Costo mínimo total = '+total;
+        texto.readOnly=true;
+        texto.className='inputSol pure-input pure-input-1';
+        divSolucion.appendChild(texto);
+
+        body.appendChild(divSolucion);
+
+        solutionExistsAlready =true;
+    }
+    else{
+        var divSol = document.getElementById('divSolucion');
+        body.removeChild(divSol);
+        solutionExistsAlready = false;
+        crearTablaSolucion(tableData);
+    }
+}
+
+function generarTabla(){
+    // get the reference for the body
+    var body = document.getElementById("mainForm");
+
+    // creates a <table> element and a <tbody> element
+    var tbl     = document.createElement("table");
+    tbl.className='pure-table pure-table-bordered pure-u-1';
+    tbl.setAttribute('id','tablaGenerada');
+    /*var tblBody = document.createElement("tbody");*/
+
+    var Filas = document.getElementById('inputFilas');
+    var x = parseInt(Filas.value) + 2 ;
+    var Columnas = document.getElementById('inputColumnas');
+    var y = parseInt(Columnas.value) + 2 ;
+    if(solutionExistsAlready){
+        body.removeChild(document.getElementById('divSolucion'));
+        solutionExistsAlready = false;
+    }
+
+    if(processExistsAlready){
+        body.removeChild(document.getElementById('divProceso'));
+        processExistsAlready = false;
+    }
+
+    if (!tableExistsAlready) {
+        // creating all cells
+        tableExistsAlready=true;
+        for (var i = 0; i < x; i++) {
+            // creates a table row
+            var row = document.createElement("tr");
+            row.className='pure-input-1';
+            for (var j = 0; j < y; j++) {
+                var cell = document.createElement("td");
+                /*cell.className='pure-u-1-24';*/
+                var input = document.createElement('input');
+                input.className = 'pure-input-1';
+
+                if (i == 0 && j > 0 && j < y-1) {
+                    input.readOnly = true;
+                    input.value='D'+ parseInt(j);
+                }
+
+                if (i == 0 && j == y-1) {
+                    input.readOnly = true;
+                    input.value='Demanda';
+                }
+
+                if (i > 0 && j == 0 && i < x-1) {
+                    input.readOnly = true;
+                    input.value='O'+ parseInt(i);
+                }
+
+                if (i == x-1 && j == 0) {
+                    input.readOnly = true;
+                    input.value='Oferta';
+                }
+
+                if ((i == x - 1 && j == y - 1) || (i == 0 && j == 0)) {
+                    input.readOnly = true;
+                    input.type = 'hidden';
+                }
+
+                cell.appendChild(input);
+                row.appendChild(cell);
+            }
+
+            tbl.appendChild(row);
+        }
+
+
+        body.appendChild(tbl);
+
+
+        var btnResolverNWC = document.createElement('input');
+        btnResolverNWC.value="NWCM";
+        btnResolverNWC.setAttribute('id','btnResolverNWC');
+        btnResolverNWC.setAttribute('onClick','saveTable(costos,"NWC")');
+        btnResolverNWC.className = 'pure-button pure-button-primary';
+        body.appendChild(btnResolverNWC);
+
+
+        var btnResolverLCM = document.createElement('input');
+        btnResolverLCM.value="LCM";
+        btnResolverLCM.setAttribute('id','btnResolverLCM');
+        btnResolverLCM.setAttribute('onClick','saveTable(costos,"LCM")');
+        btnResolverLCM.className = 'pure-button pure-button-primary';
+        body.appendChild(btnResolverLCM);
+
+        var btnResolverVAM = document.createElement('input');
+        btnResolverVAM.value="VAM";
+        btnResolverVAM.setAttribute('id','btnResolverVAM');
+        btnResolverVAM.setAttribute('onClick','saveTable(costos,"VAM")');
+        btnResolverVAM.className = 'pure-button pure-button-primary';
+        body.appendChild(btnResolverVAM);
+    }
+    else{
+        var mainForm = document.getElementById('mainForm');
+        var existingTable = document.getElementById('tablaGenerada');
+        var existingButtonVAM = document.getElementById('btnResolverVAM');
+        var existingButtonLCM = document.getElementById('btnResolverLCM');
+        var existingButtonNWC = document.getElementById('btnResolverNWC');
+        mainForm.removeChild(existingTable);
+        mainForm.removeChild(existingButtonVAM);
+        mainForm.removeChild(existingButtonLCM);
+        mainForm.removeChild(existingButtonNWC);
+        tableExistsAlready = false;
+        generarTabla();
+    }
+
+}
+
 function saveTable(myTableArray,method) {
 
     costos.length=0;
@@ -220,12 +229,12 @@ function saveTable(myTableArray,method) {
 
     var table = document.getElementById('tablaGenerada');
     var Filas = document.getElementById('inputFilas');
-    var x = parseInt(Filas.value);
+    var x = parseInt(Filas.value)+1;
     var Columnas = document.getElementById('inputColumnas');
-    var y = parseInt(Columnas.value);
-    for (var i=0;i<x ;i++) {
+    var y = parseInt(Columnas.value)+1;
+    for (var i=1;i<x ;i++) {
         var arregloFilas = [];
-        for (var j=0; j< y ; j++) {
+        for (var j=1; j< y ; j++) {
             var td = table.rows[i].cells[j].getElementsByTagName('input')[0];
             var data = parseInt(td.value);
             arregloFilas.push(data);
@@ -233,13 +242,13 @@ function saveTable(myTableArray,method) {
         myTableArray.push(arregloFilas);
     }
 
-    for (var k=0; k<y ;k++) {
+    for (var k=1; k<y ;k++) {
         var td2 = table.rows[x].cells[k].getElementsByTagName('input')[0];
         var dataDemanda = parseInt(td2.value);
         demanda.push(dataDemanda);
     }
 
-    for (var l=0; l<x ;l++) {
+    for (var l=1; l<x ;l++) {
         var td3 = table.rows[l].cells[y].getElementsByTagName('input')[0];
         var dataOferta = parseInt(td3.value);
         oferta.push(dataOferta);
